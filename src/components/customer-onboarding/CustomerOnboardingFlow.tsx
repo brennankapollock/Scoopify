@@ -1,22 +1,28 @@
-import React, { useState, useEffect } from 'react';
-import { useParams, useNavigate } from 'react-router-dom';
-import { motion, AnimatePresence } from 'framer-motion';
+import { AnimatePresence, motion } from 'framer-motion';
+import { useEffect, useState } from 'react';
+import { useNavigate, useParams } from 'react-router-dom';
 import { useAuth } from '../../contexts/auth';
 import { BusinessOnboardingData } from '../../types/business';
 import { OnboardingData } from '../../types/onboarding';
-import { sendNewCustomerNotification } from '../../lib/sendgrid';
-import LoadingScreen from './LoadingScreen';
-import ErrorScreen from './ErrorScreen';
 import BusinessNav from '../landing/sections/business/BusinessNav';
-import ZipStep from './steps/ZipStep';
-import InfoStep from './steps/InfoStep';
-import ServiceStep from './steps/ServiceStep';
-import DogStep from './steps/DogStep';
-import QuoteStep from './steps/QuoteStep';
+import ErrorScreen from './ErrorScreen';
+import LoadingScreen from './LoadingScreen';
 import DeclineStep from './steps/DeclineStep';
+import DogStep from './steps/DogStep';
+import InfoStep from './steps/InfoStep';
+import QuoteStep from './steps/QuoteStep';
+import ServiceStep from './steps/ServiceStep';
 import ThanksStep from './steps/ThanksStep';
+import ZipStep from './steps/ZipStep';
 
-type OnboardingStep = 'zip' | 'info' | 'service' | 'dogs' | 'quote' | 'decline' | 'thanks';
+type OnboardingStep =
+  | 'zip'
+  | 'info'
+  | 'service'
+  | 'dogs'
+  | 'quote'
+  | 'decline'
+  | 'thanks';
 
 const initialData: OnboardingData = {
   zipCode: '',
@@ -31,11 +37,13 @@ const initialData: OnboardingData = {
   addOns: [],
   dogs: {
     count: 1,
-    details: [{
-      name: '',
-      breed: '',
-      treats: false,
-    }],
+    details: [
+      {
+        name: '',
+        breed: '',
+        treats: false,
+      },
+    ],
   },
 };
 
@@ -46,7 +54,8 @@ const CustomerOnboardingFlow = () => {
 
   const [currentStep, setCurrentStep] = useState<OnboardingStep>('zip');
   const [data, setData] = useState<OnboardingData>(initialData);
-  const [businessData, setBusinessData] = useState<BusinessOnboardingData | null>(null);
+  const [businessData, setBusinessData] =
+    useState<BusinessOnboardingData | null>(null);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState<string | null>(null);
 
@@ -85,17 +94,19 @@ const CustomerOnboardingFlow = () => {
     if (currentStep === 'quote') {
       try {
         if (!businessId) throw new Error('Business ID is required');
-        
+
         // Create the customer in Firebase
         await createCustomer(businessId, updatedData);
 
         // Calculate total quote amount
         const serviceOffering = businessData?.services.offerings.find(
-          offering => offering.id === updatedData.service.type
+          (offering) => offering.id === updatedData.service.type
         );
         const basePrice = serviceOffering?.price || 0;
-        const additionalDogsCost = updatedData.dogs.count > 2 ? (updatedData.dogs.count - 2) * 10 : 0;
-        const treatsCost = updatedData.dogs.details.filter(dog => dog.treats).length * 5;
+        const additionalDogsCost =
+          updatedData.dogs.count > 2 ? (updatedData.dogs.count - 2) * 10 : 0;
+        const treatsCost =
+          updatedData.dogs.details.filter((dog) => dog.treats).length * 5;
         const quoteTotal = basePrice + additionalDogsCost + treatsCost;
 
         // Send email notification
@@ -125,7 +136,15 @@ const CustomerOnboardingFlow = () => {
     }
 
     // For all other steps, move to the next step
-    const steps: OnboardingStep[] = ['zip', 'info', 'service', 'dogs', 'quote', 'decline', 'thanks'];
+    const steps: OnboardingStep[] = [
+      'zip',
+      'info',
+      'service',
+      'dogs',
+      'quote',
+      'decline',
+      'thanks',
+    ];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex < steps.length - 1) {
       setCurrentStep(steps[currentIndex + 1]);
@@ -133,7 +152,15 @@ const CustomerOnboardingFlow = () => {
   };
 
   const handleBack = () => {
-    const steps: OnboardingStep[] = ['zip', 'info', 'service', 'dogs', 'quote', 'decline', 'thanks'];
+    const steps: OnboardingStep[] = [
+      'zip',
+      'info',
+      'service',
+      'dogs',
+      'quote',
+      'decline',
+      'thanks',
+    ];
     const currentIndex = steps.indexOf(currentStep);
     if (currentIndex > 0) {
       setCurrentStep(steps[currentIndex - 1]);
@@ -147,13 +174,13 @@ const CustomerOnboardingFlow = () => {
   const handleAcceptOffer = async (offer: any) => {
     try {
       if (!businessId) throw new Error('Business ID is required');
-      
+
       // Add the offer to the customer data
       const updatedData = {
         ...data,
-        offer: offer
+        offer: offer,
       };
-      
+
       await createCustomer(businessId, updatedData);
       setCurrentStep('thanks');
     } catch (err) {
@@ -167,7 +194,10 @@ const CustomerOnboardingFlow = () => {
     navigate('/');
   };
 
-  const updateBrandColors = (colors: { primary: string; secondary: string }) => {
+  const updateBrandColors = (colors: {
+    primary: string;
+    secondary: string;
+  }) => {
     const root = document.documentElement;
     const primary = colors.primary;
 
@@ -222,7 +252,7 @@ const CustomerOnboardingFlow = () => {
   return (
     <div className="min-h-screen bg-gradient-to-br from-primary-500 to-primary-700">
       <BusinessNav business={businessData} />
-      
+
       <div className="pt-20 py-12">
         <div className="max-w-3xl mx-auto px-4">
           <div className="text-center mb-8">
@@ -244,22 +274,41 @@ const CustomerOnboardingFlow = () => {
               className="bg-white/95 backdrop-blur-sm rounded-2xl shadow-xl p-8 border border-white/20"
             >
               {currentStep === 'zip' && (
-                <ZipStep onNext={handleNext} data={data} businessData={businessData} />
+                <ZipStep
+                  onNext={handleNext}
+                  data={data}
+                  businessData={businessData}
+                />
               )}
               {currentStep === 'info' && (
-                <InfoStep onNext={handleNext} onBack={handleBack} data={data} businessData={businessData} />
+                <InfoStep
+                  onNext={handleNext}
+                  onBack={handleBack}
+                  data={data}
+                  businessData={businessData}
+                />
               )}
               {currentStep === 'service' && (
-                <ServiceStep onNext={handleNext} onBack={handleBack} data={data} businessData={businessData} />
+                <ServiceStep
+                  onNext={handleNext}
+                  onBack={handleBack}
+                  data={data}
+                  businessData={businessData}
+                />
               )}
               {currentStep === 'dogs' && (
-                <DogStep onNext={handleNext} onBack={handleBack} data={data} businessData={businessData} />
+                <DogStep
+                  onNext={handleNext}
+                  onBack={handleBack}
+                  data={data}
+                  businessData={businessData}
+                />
               )}
               {currentStep === 'quote' && (
-                <QuoteStep 
-                  onNext={handleNext} 
-                  onBack={handleBack} 
-                  data={data} 
+                <QuoteStep
+                  onNext={handleNext}
+                  onBack={handleBack}
+                  data={data}
                   businessData={businessData}
                   onDecline={handleDecline}
                 />
@@ -283,11 +332,28 @@ const CustomerOnboardingFlow = () => {
           {/* Progress Indicator */}
           <div className="mt-8 flex justify-center">
             <div className="flex space-x-2">
-              {['zip', 'info', 'service', 'dogs', 'quote', 'decline', 'thanks'].map((step, index) => (
+              {[
+                'zip',
+                'info',
+                'service',
+                'dogs',
+                'quote',
+                'decline',
+                'thanks',
+              ].map((step, index) => (
                 <div
                   key={step}
                   className={`w-2 h-2 rounded-full ${
-                    index <= ['zip', 'info', 'service', 'dogs', 'quote', 'decline', 'thanks'].indexOf(currentStep)
+                    index <=
+                    [
+                      'zip',
+                      'info',
+                      'service',
+                      'dogs',
+                      'quote',
+                      'decline',
+                      'thanks',
+                    ].indexOf(currentStep)
                       ? 'bg-white'
                       : 'bg-white/30'
                   }`}

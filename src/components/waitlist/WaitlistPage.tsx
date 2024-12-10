@@ -1,9 +1,18 @@
+import { addDoc, collection, serverTimestamp } from 'firebase/firestore';
+import {
+  ArrowLeft,
+  CheckCircle2,
+  ChevronRight,
+  Dog,
+  Rocket,
+  Sparkles,
+  Star,
+  Users,
+} from 'lucide-react';
 import React, { useState } from 'react';
 import { Link } from 'react-router-dom';
-import { ArrowLeft, ChevronRight, Dog, Sparkles, Rocket, Users, Star, CheckCircle2 } from 'lucide-react';
-import Navbar from '../landing/Navbar';
-import { collection, addDoc, serverTimestamp } from 'firebase/firestore';
 import { db } from '../../lib/firebase';
+import Navbar from '../landing/Navbar';
 
 interface WaitlistData {
   fullName: string;
@@ -58,6 +67,39 @@ const WaitlistPage = () => {
         source: window.location.hostname,
       });
 
+      const htmlBody = `
+      <h1>Welcome to Scoopify's Waitlist!</h1>
+      <p>Hi ${formData.fullName},</p>
+      <p>Thank you for joining our waitlist. We're excited to have you on board!</p>
+      <p>Here's what you told us about your business:</p>
+      <ul>
+        <li>Business Stage: ${formData.businessStage}</li>
+        <li>Current Customers: ${formData.customerCount}</li>
+        <li>Desired Features: ${formData.desiredFeatures.join(', ')}</li>
+      </ul>
+      <p>We'll keep you updated on our progress and let you know as soon as we're ready to launch.</p>
+      <p>Best regards,<br>The Scoopify Team</p>
+    `;
+
+      const response = await fetch(
+        `${import.meta.env.VITE_API_URL}/api/send-email`,
+        {
+          method: 'POST',
+          headers: {
+            'Content-Type': 'application/json',
+          },
+          body: JSON.stringify({
+            to: formData.email,
+            subject: 'Welcome to Scoopify!',
+            htmlBody,
+          }),
+        }
+      );
+
+      if (!response.ok) {
+        throw new Error('Failed to send confirmation email');
+      }
+
       setSuccess(true);
     } catch (err) {
       console.error('Error submitting to waitlist:', err);
@@ -68,11 +110,11 @@ const WaitlistPage = () => {
   };
 
   const toggleFeature = (feature: string) => {
-    setFormData(prev => ({
+    setFormData((prev) => ({
       ...prev,
       desiredFeatures: prev.desiredFeatures.includes(feature)
-        ? prev.desiredFeatures.filter(f => f !== feature)
-        : [...prev.desiredFeatures, feature]
+        ? prev.desiredFeatures.filter((f) => f !== feature)
+        : [...prev.desiredFeatures, feature],
     }));
   };
 
@@ -89,23 +131,31 @@ const WaitlistPage = () => {
               You're on the list! 🎉
             </h1>
             <p className="text-lg text-gray-600 mb-8 text-center">
-              Thank you for your interest in Scoopify. We're working hard to build something amazing, and we'll let you know as soon as we're ready to launch!
+              Thank you for your interest in Scoopify. We're working hard to
+              build something amazing, and we'll let you know as soon as we're
+              ready to launch!
             </p>
             <div className="grid grid-cols-1 sm:grid-cols-3 gap-6 mb-8">
               <div className="bg-primary-50 rounded-xl p-4 text-center">
                 <Rocket className="w-8 h-8 text-primary-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900">Early Access</h3>
-                <p className="text-sm text-gray-600">Be among the first to try Scoopify</p>
+                <p className="text-sm text-gray-600">
+                  Be among the first to try Scoopify
+                </p>
               </div>
               <div className="bg-primary-50 rounded-xl p-4 text-center">
                 <Users className="w-8 h-8 text-primary-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900">Exclusive Updates</h3>
-                <p className="text-sm text-gray-600">Get development updates first</p>
+                <p className="text-sm text-gray-600">
+                  Get development updates first
+                </p>
               </div>
               <div className="bg-primary-50 rounded-xl p-4 text-center">
                 <Star className="w-8 h-8 text-primary-600 mx-auto mb-2" />
                 <h3 className="font-medium text-gray-900">Special Pricing</h3>
-                <p className="text-sm text-gray-600">Access to launch pricing</p>
+                <p className="text-sm text-gray-600">
+                  Access to launch pricing
+                </p>
               </div>
             </div>
             <div className="text-center">
@@ -136,7 +186,9 @@ const WaitlistPage = () => {
               Join the Waitlist ✨
             </h1>
             <p className="text-lg text-gray-600 text-center max-w-xl">
-              Be among the first to experience Scoopify when we launch. Tell us about your business and help shape the future of pet waste management software.
+              Be among the first to experience Scoopify when we launch. Tell us
+              about your business and help shape the future of pet waste
+              management software.
             </p>
           </div>
 
@@ -156,7 +208,12 @@ const WaitlistPage = () => {
                   type="text"
                   required
                   value={formData.fullName}
-                  onChange={(e) => setFormData(prev => ({ ...prev, fullName: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      fullName: e.target.value,
+                    }))
+                  }
                   className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors"
                   placeholder="John Smith"
                 />
@@ -170,7 +227,9 @@ const WaitlistPage = () => {
                   type="email"
                   required
                   value={formData.email}
-                  onChange={(e) => setFormData(prev => ({ ...prev, email: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({ ...prev, email: e.target.value }))
+                  }
                   className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors"
                   placeholder="john@example.com"
                 />
@@ -185,10 +244,13 @@ const WaitlistPage = () => {
                 <select
                   required
                   value={formData.businessStage}
-                  onChange={(e) => setFormData(prev => ({ 
-                    ...prev, 
-                    businessStage: e.target.value as WaitlistData['businessStage']
-                  }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      businessStage: e.target
+                        .value as WaitlistData['businessStage'],
+                    }))
+                  }
                   className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors"
                 >
                   <option value="planning">Planning to start</option>
@@ -205,7 +267,12 @@ const WaitlistPage = () => {
                   type="text"
                   placeholder="e.g., 0, 1-10, 50+"
                   value={formData.customerCount}
-                  onChange={(e) => setFormData(prev => ({ ...prev, customerCount: e.target.value }))}
+                  onChange={(e) =>
+                    setFormData((prev) => ({
+                      ...prev,
+                      customerCount: e.target.value,
+                    }))
+                  }
                   className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors"
                 />
               </div>
@@ -232,15 +299,15 @@ const WaitlistPage = () => {
                       className="sr-only"
                     />
                     {formData.desiredFeatures.includes(feature) && (
-                      <CheckCircle2 
-                        className="absolute top-2 right-2 w-4 h-4 text-primary-600" 
-                      />
+                      <CheckCircle2 className="absolute top-2 right-2 w-4 h-4 text-primary-600" />
                     )}
-                    <span className={`text-sm ${
-                      formData.desiredFeatures.includes(feature)
-                        ? 'text-primary-700'
-                        : 'text-gray-700'
-                    }`}>
+                    <span
+                      className={`text-sm ${
+                        formData.desiredFeatures.includes(feature)
+                          ? 'text-primary-700'
+                          : 'text-gray-700'
+                      }`}
+                    >
                       {feature}
                     </span>
                   </label>
@@ -255,7 +322,9 @@ const WaitlistPage = () => {
               <textarea
                 rows={4}
                 value={formData.message}
-                onChange={(e) => setFormData(prev => ({ ...prev, message: e.target.value }))}
+                onChange={(e) =>
+                  setFormData((prev) => ({ ...prev, message: e.target.value }))
+                }
                 className="mt-1 block w-full rounded-xl border-gray-300 shadow-sm focus:border-primary-500 focus:ring-primary-500 transition-colors"
                 placeholder="Tell us about your specific needs or challenges..."
               />
