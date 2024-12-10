@@ -82,7 +82,7 @@ const WaitlistPage = () => {
     `;
 
       const response = await fetch(
-        `${import.meta.env.VITE_API_URL}/api/send-email`,
+        `${import.meta.env.VITE_API_URL}/api/waitlist`,
         {
           method: 'POST',
           headers: {

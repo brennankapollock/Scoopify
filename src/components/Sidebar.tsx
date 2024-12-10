@@ -1,20 +1,17 @@
-import React, { useState } from 'react';
-import { useNavigate, useLocation } from 'react-router-dom';
 import {
-  Home,
-  Users,
-  UserCircle,
-  MessageSquare,
-  Package,
-  Map,
   Calendar,
-  Settings,
   Car,
-  BarChart3,
-  FileText,
+  Home,
+  Map,
   Menu,
+  Package,
+  Settings,
+  UserCircle,
+  Users,
   X,
 } from 'lucide-react';
+import React, { useState } from 'react';
+import { useLocation, useNavigate } from 'react-router-dom';
 
 interface SidebarProps {
   isEmployee?: boolean;
@@ -24,28 +21,52 @@ interface NavItem {
   icon: React.ElementType;
   label: string;
   path: string;
-  id: 'dashboard' | 'customers' | 'employees' | 'messages' | 'inventory' | 'schedule' | 'routes' | 'vehicles' | 'reports' | 'analytics' | 'settings';
+  id:
+    | 'dashboard'
+    | 'customers'
+    | 'employees'
+    | 'messages'
+    | 'inventory'
+    | 'schedule'
+    | 'routes'
+    | 'vehicles'
+    | 'reports'
+    | 'analytics'
+    | 'settings';
 }
 
 const allNavItems: NavItem[] = [
   { icon: Home, label: 'Dashboard', path: '/dashboard', id: 'dashboard' },
   { icon: Users, label: 'Customers', path: '/customers', id: 'customers' },
   { icon: UserCircle, label: 'Employees', path: '/employees', id: 'employees' },
-  { icon: MessageSquare, label: 'Messages', path: '/messages', id: 'messages' },
   { icon: Package, label: 'Inventory', path: '/inventory', id: 'inventory' },
   { icon: Calendar, label: 'Schedule', path: '/schedule', id: 'schedule' },
   { icon: Map, label: 'Routes', path: '/routes', id: 'routes' },
   { icon: Car, label: 'Vehicles', path: '/vehicles', id: 'vehicles' },
-  { icon: FileText, label: 'Reports', path: '/reports', id: 'reports' },
-  { icon: BarChart3, label: 'Analytics', path: '/analytics', id: 'analytics' },
+
   { icon: Settings, label: 'Settings', path: '/settings', id: 'settings' },
 ];
 
 const employeeNavItems: NavItem[] = [
-  { icon: Home, label: 'Dashboard', path: '/employee/dashboard', id: 'dashboard' },
-  { icon: Calendar, label: 'Schedule', path: '/employee/schedule', id: 'schedule' },
+  {
+    icon: Home,
+    label: 'Dashboard',
+    path: '/employee/dashboard',
+    id: 'dashboard',
+  },
+  {
+    icon: Calendar,
+    label: 'Schedule',
+    path: '/employee/schedule',
+    id: 'schedule',
+  },
   { icon: Map, label: 'Routes', path: '/employee/routes', id: 'routes' },
-  { icon: Settings, label: 'Settings', path: '/employee/settings', id: 'settings' },
+  {
+    icon: Settings,
+    label: 'Settings',
+    path: '/employee/settings',
+    id: 'settings',
+  },
 ];
 
 const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
@@ -54,7 +75,8 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
   const navigate = useNavigate();
   const location = useLocation();
   const isEmployeePath = location.pathname.startsWith('/employee');
-  const navItems = isEmployee || isEmployeePath ? employeeNavItems : allNavItems;
+  const navItems =
+    isEmployee || isEmployeePath ? employeeNavItems : allNavItems;
   let expandTimeout: NodeJS.Timeout;
 
   const handleMouseEnter = () => {
@@ -75,7 +97,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
 
   const getCurrentPage = () => {
     const path = location.pathname;
-    const item = navItems.find(item => item.path === path);
+    const item = navItems.find((item) => item.path === path);
     return item?.id || 'dashboard';
   };
 
@@ -96,7 +118,7 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
         }`}
         onClick={() => setIsMobileMenuOpen(false)}
       />
-      
+
       {/* Mobile Menu Drawer */}
       <div
         className={`fixed top-0 right-0 h-full w-64 bg-primary-600 text-white z-50 transform transition-transform duration-300 ease-in-out lg:hidden ${
@@ -126,12 +148,14 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
                 key={item.path}
                 onClick={() => handleNavClick(item)}
                 className={`w-full flex items-center py-3 px-4 text-white transition-all duration-300
-                  ${getCurrentPage() === item.id ? 'bg-primary-700' : 'hover:bg-primary-500'}`}
+                  ${
+                    getCurrentPage() === item.id
+                      ? 'bg-primary-700'
+                      : 'hover:bg-primary-500'
+                  }`}
               >
                 <item.icon size={24} />
-                <span className="ml-4 whitespace-nowrap">
-                  {item.label}
-                </span>
+                <span className="ml-4 whitespace-nowrap">{item.label}</span>
               </button>
             ))}
           </nav>
@@ -150,16 +174,16 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
           {/* Desktop Logo */}
           <div className="hidden lg:flex items-center justify-center mb-6 px-4">
             <div className="relative h-8 w-full flex items-center justify-center">
-              <img 
-                src="https://i.ibb.co/4NCXpch/scoopify-icon-white.png" 
-                alt="Logo" 
+              <img
+                src="https://i.ibb.co/4NCXpch/scoopify-icon-white.png"
+                alt="Logo"
                 className={`absolute h-8 w-auto transition-opacity duration-300 ${
                   isExpanded ? 'opacity-0' : 'opacity-100'
                 }`}
               />
-              <img 
-                src="https://i.ibb.co/wK1LRfB/scoopify-white-logo.png" 
-                alt="Logo" 
+              <img
+                src="https://i.ibb.co/wK1LRfB/scoopify-white-logo.png"
+                alt="Logo"
                 className={`relative h-8 w-auto transition-opacity duration-300 ${
                   isExpanded ? 'opacity-100' : 'opacity-0'
                 }`}
@@ -173,13 +197,21 @@ const Sidebar: React.FC<SidebarProps> = ({ isEmployee }) => {
               key={item.path}
               onClick={() => handleNavClick(item)}
               className={`w-full flex items-center py-3 px-7 text-white transition-colors duration-300
-                ${getCurrentPage() === item.id ? 'bg-primary-700' : 'hover:bg-primary-500'}`}
+                ${
+                  getCurrentPage() === item.id
+                    ? 'bg-primary-700'
+                    : 'hover:bg-primary-500'
+                }`}
             >
               <div className="w-6 flex justify-center">
                 <item.icon
                   size={24}
                   className={`transition-transform duration-300 hover:scale-110
-                    ${getCurrentPage() === item.id ? 'text-white' : 'text-white/80'}`}
+                    ${
+                      getCurrentPage() === item.id
+                        ? 'text-white'
+                        : 'text-white/80'
+                    }`}
                 />
               </div>
               <span

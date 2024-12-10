@@ -1,7 +1,7 @@
 import React, { useEffect } from 'react';
+import { useAuth } from '../contexts/auth';
 import Header from './Header';
 import Sidebar from './Sidebar';
-import { useAuth } from '../contexts/auth';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -59,31 +59,59 @@ const DashboardLayout: React.FC<DashboardLayoutProps> = ({ children }) => {
     const root = document.documentElement;
 
     // Set lighter shades
-    root.style.setProperty('--color-primary-50', adjustColor(primaryColor, 0.95));
-    root.style.setProperty('--color-primary-100', adjustColor(primaryColor, 0.9));
-    root.style.setProperty('--color-primary-200', adjustColor(primaryColor, 0.8));
-    root.style.setProperty('--color-primary-300', adjustColor(primaryColor, 0.6));
-    root.style.setProperty('--color-primary-400', adjustColor(primaryColor, 0.4));
-    
+    root.style.setProperty(
+      '--color-primary-50',
+      adjustColor(primaryColor, 0.95)
+    );
+    root.style.setProperty(
+      '--color-primary-100',
+      adjustColor(primaryColor, 0.9)
+    );
+    root.style.setProperty(
+      '--color-primary-200',
+      adjustColor(primaryColor, 0.8)
+    );
+    root.style.setProperty(
+      '--color-primary-300',
+      adjustColor(primaryColor, 0.6)
+    );
+    root.style.setProperty(
+      '--color-primary-400',
+      adjustColor(primaryColor, 0.4)
+    );
+
     // Set base color
     root.style.setProperty('--color-primary-500', primaryColor);
-    
+
     // Set darker shades
-    root.style.setProperty('--color-primary-600', darkenColor(primaryColor, 0.1));
-    root.style.setProperty('--color-primary-700', darkenColor(primaryColor, 0.2));
-    root.style.setProperty('--color-primary-800', darkenColor(primaryColor, 0.3));
-    root.style.setProperty('--color-primary-900', darkenColor(primaryColor, 0.4));
-    root.style.setProperty('--color-primary-950', darkenColor(primaryColor, 0.5));
+    root.style.setProperty(
+      '--color-primary-600',
+      darkenColor(primaryColor, 0.1)
+    );
+    root.style.setProperty(
+      '--color-primary-700',
+      darkenColor(primaryColor, 0.2)
+    );
+    root.style.setProperty(
+      '--color-primary-800',
+      darkenColor(primaryColor, 0.3)
+    );
+    root.style.setProperty(
+      '--color-primary-900',
+      darkenColor(primaryColor, 0.4)
+    );
+    root.style.setProperty(
+      '--color-primary-950',
+      darkenColor(primaryColor, 0.5)
+    );
   };
 
   return (
-    <div className="min-h-screen bg-gray-50">
+    <div className="min-h-screen bg-gray-50 ">
       <Header showFullNav={!isEmployee} />
       <div className="flex">
         <Sidebar isEmployee={isEmployee} />
-        <main className="flex-1 lg:ml-0 pt-24 px-2">
-          {children}
-        </main>
+        <main className="flex-1 lg:ml-0 pt-24 px-2 pb-12">{children}</main>
       </div>
     </div>
   );
