@@ -3,19 +3,18 @@
 ## Overview
 Planned integrations for Scoopify, listed in order of priority. Each integration includes required dependencies, configuration details, and implementation notes (I think).
 
-## 1. SendGrid Integration (Waitlist, Customer, and Admin Notifications)
+## 1. Postmark Integration (Waitlist, Customer, and Admin Notifications)
 **Priority: High**
 
 ### Dependencies
 ```json
 {
-  "@sendgrid/mail": "^8.1.1",
-  "@sendgrid/client": "^8.1.1"
+  "@postmark/postmark": "^3.10.0"
 }
 ```
 
 ### Configuration Required
-- SendGrid API Key
+- Postmark Server Token
 - Verified Sender Domain
 - Email Templates (Will Already Be Designed):
   - Waitlist Confirmation Email
@@ -25,7 +24,7 @@ Planned integrations for Scoopify, listed in order of priority. Each integration
   - Customer Visit Notification
 
 ### Implementation Notes
-- Partially implemented in `src/lib/sendgrid.ts`
+- Partially implemented in `src/lib/postmark.ts`
 - Need to expand functionality for:
   - Waitlist confirmation emails
   - Welcome emails for new customers
